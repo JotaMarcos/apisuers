@@ -86,7 +86,7 @@ class userModel {
         }
 
         try {
-          await knex.update(editUser).where({id_user: id}).tables('users')
+          await knex.update(editUser).where({id_user: id}).table('users')
           return { status: true }
         } catch (error) {
           return { status: false, erro: error }
@@ -99,6 +99,20 @@ class userModel {
       }
 
 
+     }
+
+     async delete(id) {
+       const user = await this.findById(id)
+       if(user != undefined) {
+          try {
+            await knex.delete().where({id_user: id}).table('users')
+            return {status: true}
+          } catch (error) {
+            return {status: false, erro: error}
+          }
+       } else {
+         return {status: false, erro: 'O usuário não existe, portanto não pode ser deletado.'}
+       }
      }
 
 

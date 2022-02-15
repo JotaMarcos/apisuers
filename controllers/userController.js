@@ -75,6 +75,23 @@ class UserController {
 
     }
 
+    async remove(req,res) {
+        const id = req.params.id
+
+        const result = await userModel.delete(id)
+
+        if(result.status) {
+            res.status(200)
+            res.send('Usuário excluído com sucesso!')
+        } else {
+            res.status(406)
+            res.send(result.erro)
+            //res.json(result)
+        }
+
+
+    }
+
 }
 
 module.exports = new UserController()
