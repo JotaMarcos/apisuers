@@ -1,5 +1,6 @@
 const { restart } = require('nodemon')
 const userModel = require('../models/userModel')
+const passwordToken = require('../models/passwordToken')
 
 class UserController {
 
@@ -91,6 +92,41 @@ class UserController {
 
 
     }
+
+
+    async recoverPassword(req, res) {
+        const email = req.body.email
+        const result = await passwordToken.create(email)
+        if(result.status) {
+            res.status(200)
+            res.send('' + result.token)
+        } else {
+            res.status(406)
+            res.send(result.erro)
+            //res.json(result)
+        }
+    }
+
+    async changePassword(req, res) {
+        const token = req.body.token
+        const password = req.body.password
+
+        const isTokenValid = await passwordToken.validate(token)
+
+        if(isTokenValid.status) {
+
+            await userModel.changePassword(password, isTokenValid.token.user_id, isTokenValid.token.token)
+
+            res.status(200)
+            res.send('Senha alterada com sucesso!')
+
+        } else {
+            res.status(406)
+            res.send('Token inválido!')
+        }
+
+    }
+   
 
 }
 
